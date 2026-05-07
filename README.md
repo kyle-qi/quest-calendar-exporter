@@ -132,18 +132,3 @@ If Quest's HTML changes shape and the parser misses meetings, the
 fallback regex scan in `parser.js` (`fallbackTextScan`) should still
 catch them. Open an issue (or a PR with an updated fixture) if you spot
 a regression.
-
----
-
-## Things that would make future requests easier
-
-If you'd like more on top of this:
-
-- **A real Quest HTML fixture** (with personal data scrubbed) — I built
-  this against a synthetic example. A real one would let me harden the
-  parser for any quirks in the current PeopleSoft release.
-- **The exact term codes** you care about (e.g. 1259 = Fall 2025) if you
-  ever want to pull class-search data from `classes.uwaterloo.ca` to
-  enrich rooms/instructors automatically.
-- **Whether you want exam events** included — those live on a separate
-  Quest page (`Final Exam Schedule`) and would be a small extension.

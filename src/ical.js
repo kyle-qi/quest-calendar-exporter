@@ -120,8 +120,7 @@
     const until = fmtUTC(localEnd);
 
     const summary = (ev.subject + ' ' + ev.number) +
-      (ev.component ? ' ' + ev.component : '') +
-      (ev.section ? ' ' + ev.section : '');
+      (ev.component ? ' ' + ev.component : '');
 
     const descriptionParts = [];
     if (ev.name) descriptionParts.push('Course: ' + ev.name);

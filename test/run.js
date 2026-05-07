@@ -46,7 +46,7 @@ function run() {
   }
 
   // Expectations
-  assert(events.length === 3, 'three real meetings parsed (TBA row dropped)');
+  assert(events.length === 4, 'four real meetings parsed (TBA row dropped)');
 
   const cs350Lec = events.find((e) => e.subject === 'CS' && e.component === 'LEC');
   assert(!!cs350Lec, 'CS 350 LEC found');
@@ -60,6 +60,12 @@ function run() {
   assert(!!cs350Tut, 'CS 350 TUT found');
   assert(cs350Tut && cs350Tut.days.join(',') === 'TH', 'CS 350 TUT days = TH');
 
+  const continuation = events.find((e) => e.subject === 'CS' && e.component === 'TUT' && e.days.join(',') === 'FR');
+  assert(!!continuation, 'blank-row continuation parsed');
+  assert(continuation && continuation.classNbr === '5124', 'continuation inherits Class Nbr');
+  assert(continuation && continuation.section === '101', 'continuation inherits Section');
+  assert(continuation && continuation.component === 'TUT', 'continuation inherits Component');
+
   const math239 = events.find((e) => e.subject === 'MATH' && e.number === '239');
   assert(!!math239, 'MATH 239 found');
   assert(math239 && math239.days.join(',') === 'TU,TH', 'MATH 239 days = TU,TH');
@@ -68,12 +74,12 @@ function run() {
   const ics = win.QuestICS.buildICS(events, { calendarName: 'Test Calendar' });
   assert(/BEGIN:VCALENDAR/.test(ics) && /END:VCALENDAR/.test(ics), 'ICS has VCALENDAR');
   assert(/BEGIN:VTIMEZONE/.test(ics), 'ICS has VTIMEZONE');
-  assert((ics.match(/BEGIN:VEVENT/g) || []).length === 3, 'ICS has 3 VEVENTs');
+  assert((ics.match(/BEGIN:VEVENT/g) || []).length === 4, 'ICS has 4 VEVENTs');
   assert(/RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;UNTIL=2025040[45]T/.test(ics),
     'CS 350 LEC RRULE looks right');
   assert(/DTSTART;TZID=America\/Toronto:20250106T133000/.test(ics),
     'CS 350 LEC DTSTART localized');
-  assert(/SUMMARY:CS 350 LEC 001/.test(ics), 'CS 350 LEC summary');
+  assert(/SUMMARY:CS 350 LEC/.test(ics) && !/SUMMARY:CS 350 LEC 001/.test(ics), 'CS 350 LEC summary omits section');
   assert(/LOCATION:MC 4040/.test(ics), 'CS 350 LEC location');
 
   if (failures) {

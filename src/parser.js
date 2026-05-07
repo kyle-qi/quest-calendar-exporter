@@ -120,6 +120,13 @@
     const colClassNbr = findHeaderIndex(headers, ['class nbr', 'class #', 'class number']);
 
     const events = [];
+    // Quest/PeopleSoft sometimes renders multi-line meeting rows where
+    // Class Nbr / Section / Component are shown only on the first row, and
+    // subsequent rows leave those cells blank. In the UI, those blanks
+    // inherit from the most recent non-empty values above.
+    let lastClassNbr = '';
+    let lastSection = '';
+    let lastComponent = '';
     for (let i = 1; i < rows.length; i++) {
       const cells = Array.from(rows[i].querySelectorAll('td'));
       if (cells.length === 0) continue;
@@ -130,13 +137,20 @@
       const dates = parseDateRange(datesText);
       if (!meeting || !dates) continue;
 
+      let section = colSection >= 0 ? cellText(cells[colSection]) : '';
+      let component = colComponent >= 0 ? cellText(cells[colComponent]) : '';
+      let classNbr = colClassNbr >= 0 ? cellText(cells[colClassNbr]) : '';
+      if (classNbr) lastClassNbr = classNbr; else classNbr = lastClassNbr;
+      if (section) lastSection = section; else section = lastSection;
+      if (component) lastComponent = component; else component = lastComponent;
+
       events.push({
         subject: course.subject,
         number: course.number,
         name: course.name,
-        section: colSection >= 0 ? cellText(cells[colSection]) : '',
-        component: colComponent >= 0 ? cellText(cells[colComponent]) : '',
-        classNbr: colClassNbr >= 0 ? cellText(cells[colClassNbr]) : '',
+        section,
+        component,
+        classNbr,
         room: colRoom >= 0 ? cellText(cells[colRoom]) : '',
         instructor: colInstr >= 0 ? cellText(cells[colInstr]) : '',
         days: meeting.days,

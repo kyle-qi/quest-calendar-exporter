@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quest Calendar Exporter</title>
+  <style>
+    :root { --uw-yellow: #fed136; --uw-gold: #b8860b; color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 32px 16px 64px;
+      font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1a1a1a;
+      background: #fafafa;
+    }
+    main { max-width: 720px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; font-size: 26px; }
+    h2 { margin: 28px 0 8px; font-size: 18px; }
+    .lede { color: #444; margin: 0 0 22px; }
+    .card {
+      background: #fff;
+      border: 1px solid #e3e3e3;
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    label { display: block; font-weight: 600; margin: 12px 0 6px; }
+    textarea, input[type="file"] {
+      width: 100%;
+      font: 13px ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fcfcfc;
+    }
+    textarea { min-height: 180px; resize: vertical; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+    button {
+      padding: 10px 16px;
+      font: 600 14px inherit;
+      background: var(--uw-yellow);
+      color: #1a1a1a;
+      border: 1px solid var(--uw-gold);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button.secondary { background: #fff; }
+    button[disabled] { opacity: 0.5; cursor: not-allowed; }
+    #status { margin-top: 10px; min-height: 22px; font-size: 14px; }
+    .ok  { color: #137333; }
+    .err { color: #b00020; }
+    .hint { color: #666; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+    th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #eee; vertical-align: top; }
+    th { background: #f5f5f5; font-weight: 600; }
+    details { margin-top: 14px; }
+    summary { cursor: pointer; font-weight: 600; }
+    .footer { margin-top: 24px; color: #777; font-size: 13px; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #eef; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>uWaterloo Quest Calendar Exporter</h1>
+    <p class="lede">
+      Open-source replacement for the deprecated <code>baraa.ca</code> Chrome extension.
+      Convert your Quest <b>My Class Schedule</b> page into a <code>.ics</code> file you can
+      import into Google Calendar, Apple Calendar, or Outlook.
+    </p>
+
+    <div class="card">
+      <h2 style="margin-top:0">Step 1 &mdash; Get your schedule HTML</h2>
+      <ol>
+        <li>Sign in to <a href="https://quest.pecs.uwaterloo.ca/" target="_blank" rel="noreferrer">Quest</a>.</li>
+        <li>Go to <b>Academics &rarr; Enroll &rarr; My Class Schedule</b> and pick the term.</li>
+        <li>Switch to <b>List View</b>.</li>
+        <li>Save the page (<kbd>Ctrl/Cmd</kbd>+<kbd>S</kbd>, "Webpage, complete" or "HTML only") <i>or</i> right-click and copy the rendered HTML.</li>
+      </ol>
+
+      <h2>Step 2 &mdash; Convert</h2>
+      <label for="file">Upload a saved Quest HTML file</label>
+      <input id="file" type="file" accept=".html,.htm,text/html" />
+
+      <label for="html">&hellip;or paste HTML</label>
+      <textarea id="html" placeholder="<!DOCTYPE html>&#10;..."></textarea>
+
+      <div class="row">
+        <button id="parse" type="button">Parse schedule</button>
+        <button id="download" type="button" class="secondary" disabled>Download .ics</button>
+        <span id="status" class="hint">Awaiting input&hellip;</span>
+      </div>
+
+      <details id="preview-wrap" hidden>
+        <summary>Preview parsed meetings (<span id="count">0</span>)</summary>
+        <table id="preview">
+          <thead>
+            <tr>
+              <th>Course</th><th>Section</th><th>Days</th>
+              <th>Time</th><th>Dates</th><th>Room</th><th>Instructor</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </details>
+    </div>
+
+    <p class="footer">
+      Runs entirely in your browser &mdash; nothing is uploaded.
+      <span class="pill">v2.0</span>
+    </p>
+  </main>
+
+  <script src="../src/parser.js"></script>
+  <script src="../src/ical.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

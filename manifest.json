@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "uWaterloo Quest Calendar Exporter",
+  "version": "2.0.0",
+  "description": "Export your Quest class schedule to an .ics calendar file. Open-source replacement for the deprecated baraa.ca extension.",
+  "permissions": ["scripting", "downloads", "activeTab"],
+  "host_permissions": ["https://quest.pecs.uwaterloo.ca/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://quest.pecs.uwaterloo.ca/*"],
+      "all_frames": true,
+      "js": ["src/parser.js", "src/ical.js", "src/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "uWaterloo Schedule Exporter",
+    "default_popup": "src/popup.html"
+  }
+}

@@ -98,12 +98,22 @@
 
   function uidFor(ev, idx) {
     const safe = (s) => String(s || '').replace(/[^A-Za-z0-9]+/g, '');
+    const safeDay = (s) => String(s || '').replace(/[^A-Z]/g, '');
+    const timeKey =
+      (ev.startTime ? pad(ev.startTime.h) + pad(ev.startTime.m) : 'HHMM') +
+      '-' +
+      (ev.endTime ? pad(ev.endTime.h) + pad(ev.endTime.m) : 'HHMM');
+    const daysKey = Array.isArray(ev.days) && ev.days.length
+      ? ev.days.map(safeDay).join('')
+      : 'DAYS';
     const parts = [
       safe(ev.subject) + safe(ev.number),
       safe(ev.section) || ('s' + idx),
       safe(ev.component) || 'CMP',
       safe(ev.classNbr) || ('n' + idx),
-      ev.startDate.y + pad(ev.startDate.m) + pad(ev.startDate.d)
+      ev.startDate.y + pad(ev.startDate.m) + pad(ev.startDate.d),
+      daysKey,
+      timeKey
     ];
     return parts.join('-') + '@quest-calendar-exporter';
   }

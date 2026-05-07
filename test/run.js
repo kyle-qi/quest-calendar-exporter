@@ -75,6 +75,12 @@ function run() {
   assert(/BEGIN:VCALENDAR/.test(ics) && /END:VCALENDAR/.test(ics), 'ICS has VCALENDAR');
   assert(/BEGIN:VTIMEZONE/.test(ics), 'ICS has VTIMEZONE');
   assert((ics.match(/BEGIN:VEVENT/g) || []).length === 4, 'ICS has 4 VEVENTs');
+
+  // UIDs must be unique; Google Calendar may drop duplicates.
+  const uids = (ics.match(/^UID:.*$/gm) || []).map((l) => l.slice(4).trim());
+  assert(uids.length === 4, 'ICS has 4 UID lines');
+  assert(new Set(uids).size === uids.length, 'all UIDs are unique');
+
   assert(/RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;UNTIL=2025040[45]T/.test(ics),
     'CS 350 LEC RRULE looks right');
   assert(/DTSTART;TZID=America\/Toronto:20250106T133000/.test(ics),

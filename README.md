@@ -18,27 +18,6 @@ All three share the same parser (`src/parser.js`) and `.ics` builder
 
 ---
 
-## Why not pull from `classes.uwaterloo.ca` or `uwflow.com`?
-
-You asked which source is easiest to work with. Quick rundown:
-
-- **`quest.pecs.uwaterloo.ca` (Quest)** — the only source that knows *your*
-  enrolled sections, meeting times, rooms, and term dates. It's behind UW
-  SSO + 2FA, so a plain script can't log in for you. The Chrome extension
-  and the "paste your saved HTML" web app are how we get around that.
-- **`classes.uwaterloo.ca/under.html`** — UW's class search. It lists
-  *every* offered section's meeting pattern, but doesn't know which ones
-  *you* are enrolled in. Useful as a fallback to enrich data (e.g. fill
-  in a missing room) but can't drive the export by itself.
-- **`uwflow.com`** — community course reviews. Has *some* schedule data
-  scraped from the open APIs, but again can't tell which sections you're
-  in, and isn't an official source.
-
-So this tool exports from your Quest schedule directly. If you ever need
-class-search data too, the parser/ICS builder are reusable.
-
----
-
 ## Option A — Chrome extension (recommended)
 
 Drop-in replacement for the old extension.
